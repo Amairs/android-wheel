@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../rd/js/jquery.js"></script>
+
+<script type="text/javascript">
+  $(function(){
+	 
+		  $.ajax({
+		   url:"ChinaArea.xml",
+		   dataType:"xml",
+		   type:"GET",
+		   success: function(msg){
+			$(msg).find("province").each(function(k, v) {
+                 var t = $(this).attr("province"); 
+                $("#sheng").append("<option>"+t+"</option>");
+            });
+			   }
+		  })
+		 
+	 
+    $("#sheng").change(function(){ 
+ 
+         $("#sCity>option").remove(); 
+         $("#sArea>option").remove();
+         
+         
+         var pname = $("#sheng").val(); 
+         $.ajax({
+			 url:"ChinaArea.xml",
+			 dataType:"xml",
+		     type:"GET",
+             success:function(msg){ 
+            	 $("#sCity").append("<option>"+"--请选择--"+"</option>");
+            	 $("#sArea").append("<option>"+"--请选择--"+"</option>");
+                 $(msg).find("province[province='"+pname+"']>City").each(function(){ 
+                  var city = $(this).attr("City");//this-> 
+                  $("#sCity").append("<option>"+city+"</option>"); 
+          }); 
+    
+   
+          } 
+            }); 
+      });
+    $("#sCity").change(function(){ 
+ 
+         $("#sArea>option").remove(); 
+    
+         var cname = $("#sCity").val(); 
+         $.ajax({
+			 url:"ChinaArea.xml", 
+			 dataType:"xml",
+		     type:"GET",
+             success:function(msg){ 
+            	  $("#sArea").append("<option>"+"--请选择--"+"</option>");
+                   $(msg).find("province[province='"+$("#sheng").val()+"']").find("City[City='"+cname+"']>Piecearea").each(function(){ 
+                   var area = $(this).attr("Piecearea");//this-> 
+                   $("#sArea").append("<option>"+area+"</option>"); 
+                   }); 
+    
+   
+                               } 
+         }); 
+        });
+   
+   
+   });
+</script>
+</head>
+<body>
+省<select id="sheng">
+  <option value="0">--请选择--</option>
+ </select>&nbsp&nbsp;
+市<select id="sCity">
+  <option value="0">--请选择--</option>
+  </select>&nbsp&nbsp;
+区<select id="sArea">
+  <option value="0">--请选择--</option>
+  </select>&nbsp&nbsp;<br/>
+ 
+
+</body>
+</html>
